@@ -16,7 +16,7 @@ USER root
 # update to faster mirror
 ARG MIRROR=http://ftp.fau.de/ubuntu/
 RUN <<EOF
-rm /etc/apt/source.list.d/ubuntu.sources
+rm /etc/apt/sources.list.d/ubuntu.sources
 echo "deb [arch=$(dpkg-architecture -q DEB_BUILD_ARCH)] ${MIRROR} $(. /etc/os-release >/dev/null; echo $VERSION_CODENAME) main universe multiverse restricted" > /etc/apt/sources.list
 echo "deb [arch=$(dpkg-architecture -q DEB_BUILD_ARCH)] ${MIRROR} $(. /etc/os-release >/dev/null; echo $VERSION_CODENAME)-updates main universe multiverse restricted" >> /etc/apt/sources.list
 echo "deb [arch=$(dpkg-architecture -q DEB_BUILD_ARCH)] ${MIRROR} $(. /etc/os-release >/dev/null; echo $VERSION_CODENAME)-security main universe multiverse restricted" >> /etc/apt/sources.list
