@@ -3,7 +3,7 @@
   "name": "EPLF GO Container",
   "dockerComposeFile": "docker-compose.yaml",
   "service": "eplf-dev",
-  "runServices": ["kafka", "kafka-ui", "mysql", "keycloak"],
+  //"runServices": ["kafka", "kafka-ui", "mysql", "keycloak"],
   "updateRemoteUserUID": true,
 //  "remoteUser": "developer",
   "containerUser": "developer",
