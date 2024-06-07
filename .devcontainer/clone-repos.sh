@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+set -x
 
 # shellcheck disable=SC2016
 echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/"${USERNAME}"/.zshrc
