@@ -14,15 +14,15 @@ ARG INSTALLOHMYZSHCONFIG="${INSTALLOHMYZSHCONFIG:-"true"}"
 USER root
 
 # update to faster mirror
-RUN <<EOF > /etc/apt/sources.list.d/ubuntu.sources
+RUN <<EOFAPT > /etc/apt/sources.list.d/ubuntu.sources
 Types: deb
 URIs: http://ftp.fau.de/ubuntu/
 Suites: $(. /etc/os-release >/dev/null && echo ${VERSION_CODENAME}) $(. /etc/os-release >/dev/null && echo ${VERSION_CODENAME})-updates $(. /etc/os-release >/dev/null && echo ${VERSION_CODENAME})-backports $(. /etc/os-release >/dev/null && echo ${VERSION_CODENAME})-security $(. /etc/os-release >/dev/null && echo ${VERSION_CODENAME})-proposed
 Components: main universe restricted multiverse
 Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-EOF
+EOFAPT
 
-RUN <<EOF
+RUN <<EOFAPTINSTALL
     apt update
     apt install --no-install-recommends -y \
     build-essential \
@@ -43,19 +43,19 @@ RUN <<EOF
     libfreetype6 \
     procps
     apt clean
-EOF
+EOFAPTINSTALL
 
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 
 ENV PATH="/home/linuxbrew/.linuxbrew/bin:${PATH}"
 
 WORKDIR /tmp
-RUN <<EOF
+RUN <<EOFUSER
 userdel -r ubuntu
 git clone https://github.com/devcontainers/features.git
 cd features/src/common-utils
 bash main.sh
-EOF
+EOFUSER
 
 ARG MOBY=false
 ARG VERSION=latest
