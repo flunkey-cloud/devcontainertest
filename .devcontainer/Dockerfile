@@ -3,8 +3,12 @@ FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 ARG USERNAME=${USERNAME:-developer}
 ARG USERUID=${USERUID:-1000}
 ARG USERGID=${USERGID:-1000}
-ARG CONFIGUREZSHASDEFAULTSHELL=${CONFIGUREZSHASDEFAULTSHELL:-true}
+ARG UPGRADEPACKAGES=${UPGRADEPACKAGES:-true}
 ARG NONFREEPACKAGES=${NONFREEPACKAGES:-true}
+ARG INSTALLZSH=${INSTALLZSH:-true}
+ARG CONFIGUREZSHASDEFAULTSHELL=${CONFIGUREZSHASDEFAULTSHELL:-true}
+ARG INSTALLOHMYZSH=${INSTALLOHMYZSH:-true}
+ARG INSTALLOHMYZSHCONFIG="${INSTALLOHMYZSHCONFIG:-"true"}"
 
 USER root
 RUN apt update &&\
@@ -36,11 +40,7 @@ WORKDIR /tmp
 RUN userdel -r ubuntu && \
     git clone https://github.com/devcontainers/features.git && \
     cd features/src/common-utils && \
-    bash install.sh
-#    groupadd --gid $USER_GID $USERNAME &&\
-#    useradd --uid $USER_UID --gid $USER_GID -m $USERNAME &&\
-#    echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME &&\
-#    chmod 0440 /etc/sudoers.d/$USERNAME
+    bash main.sh
 
 ARG MOBY=false
 ARG VERSION=latest
