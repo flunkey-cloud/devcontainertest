@@ -14,13 +14,15 @@ ARG INSTALLOHMYZSHCONFIG="${INSTALLOHMYZSHCONFIG:-"true"}"
 USER root
 
 # update to faster mirror
-RUN <<EOFAPT > /etc/apt/sources.list.d/ubuntu.sources
-Types: deb
-URIs: http://ftp.fau.de/ubuntu/
-Suites: $(. /etc/os-release >/dev/null && echo ${VERSION_CODENAME}) $(. /etc/os-release >/dev/null && echo ${VERSION_CODENAME})-updates $(. /etc/os-release >/dev/null && echo ${VERSION_CODENAME})-backports $(. /etc/os-release >/dev/null && echo ${VERSION_CODENAME})-security $(. /etc/os-release >/dev/null && echo ${VERSION_CODENAME})-proposed
-Components: main universe restricted multiverse
-Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-EOFAPT
+ARG MIRROR=http://ftp.fau.de/ubuntu/
+RUN <<EOF
+rm /etc/apt/source.list.d/ubuntu.sources
+echo "deb [arch=$(dpkg-architecture -q DEB_BUILD_ARCH)] ${MIRROR} $(. /etc/os-release >/dev/null; echo $VERSION_CODENAME) main universe multiverse restricted" > /etc/apt/sources.list
+echo "deb [arch=$(dpkg-architecture -q DEB_BUILD_ARCH)] ${MIRROR} $(. /etc/os-release >/dev/null; echo $VERSION_CODENAME)-updates main universe multiverse restricted" >> /etc/apt/sources.list
+echo "deb [arch=$(dpkg-architecture -q DEB_BUILD_ARCH)] ${MIRROR} $(. /etc/os-release >/dev/null; echo $VERSION_CODENAME)-security main universe multiverse restricted" >> /etc/apt/sources.list
+echo "deb [arch=$(dpkg-architecture -q DEB_BUILD_ARCH)] ${MIRROR} $(. /etc/os-release >/dev/null; echo $VERSION_CODENAME)-proposed main universe multiverse restricted" >> /etc/apt/sources.list
+echo "deb [arch=$(dpkg-architecture -q DEB_BUILD_ARCH)] ${MIRROR} $(. /etc/os-release >/dev/null; echo $VERSION_CODENAME)-backports main universe multiverse restricted" >> /etc/apt/sources.list
+EOF
 
 RUN <<EOFAPTINSTALL
     apt update
