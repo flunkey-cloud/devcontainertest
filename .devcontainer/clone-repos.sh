@@ -6,6 +6,8 @@ echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/"${USERNA
 
 cd "$(dirname "${LOCAL_WORKSPACE_FOLDER}")" || exit
 
+sudo chown "${USERNAME}":"${USERNAME}" -R /home/"${USERNAME}"
+
 git clone git@ssh.dev.azure.com:v3/havdb-labor/havdb/havdb-bgz
 git clone git@ssh.dev.azure.com:v3/havdb-labor/havdb/eplf-einnahmeplattform-tests
 git clone git@ssh.dev.azure.com:v3/havdb-labor/havdb/havdb-bgz-openshift

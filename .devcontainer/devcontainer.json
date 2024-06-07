@@ -32,7 +32,7 @@
   ],
   "remoteEnv": {
     "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}",
-    "HOME": ""
+//    "HOME": ""
   },
   "containerEnv": {
     "PATH": "/usr/local/go/bin:/home/developer/go/bin:${PATH}",

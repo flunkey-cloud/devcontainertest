@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.4
 FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 
 ARG USERNAME=${USERNAME:-developer}
@@ -11,6 +12,17 @@ ARG INSTALLOHMYZSH=${INSTALLOHMYZSH:-true}
 ARG INSTALLOHMYZSHCONFIG="${INSTALLOHMYZSHCONFIG:-"true"}"
 
 USER root
+
+// update to faster mirror
+ARG MIRROR=http://ftp.fau.de/ubuntu/
+RUN <<EOF
+echo "deb [arch=$(dpkg-architecture -q DEB_BUILD_ARCH)] ${MIRROR} $(. /etc/os-release >/dev/null; echo $VERSION_CODENAME) main universe multiverse restricted" > /etc/apt/sources.list
+echo "deb [arch=$(dpkg-architecture -q DEB_BUILD_ARCH)] ${MIRROR} $(. /etc/os-release >/dev/null; echo $VERSION_CODENAME)-updates main universe multiverse restricted" >> /etc/apt/sources.list
+echo "deb [arch=$(dpkg-architecture -q DEB_BUILD_ARCH)] ${MIRROR} $(. /etc/os-release >/dev/null; echo $VERSION_CODENAME)-security main universe multiverse restricted" >> /etc/apt/sources.list
+echo "deb [arch=$(dpkg-architecture -q DEB_BUILD_ARCH)] ${MIRROR} $(. /etc/os-release >/dev/null; echo $VERSION_CODENAME)-proposed main universe multiverse restricted" >> /etc/apt/sources.list
+echo "deb [arch=$(dpkg-architecture -q DEB_BUILD_ARCH)] ${MIRROR} $(. /etc/os-release >/dev/null; echo $VERSION_CODENAME)-backports main universe multiverse restricted" >> /etc/apt/sources.list
+EOF
+
 RUN apt update &&\
     apt install --no-install-recommends -y \
     build-essential \
