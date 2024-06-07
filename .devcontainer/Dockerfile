@@ -77,7 +77,7 @@ RUN brew install gcc just go-task go azure-cli argocd helm kubernetes-cli kube-l
 ENV CGO_ENABLED=0 \
    GO111MODULE=on \
    GOPATH=/home/${USERNAME}/go
-#
+
 RUN --mount=type=cache,id=gobuild,target=/${USERNAME}/.cache/go-build \
     --mount=type=cache,id=gopkg,target=/go/pkg/mod/ \
     go install github.com/mgechev/revive@latest && \
