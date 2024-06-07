@@ -14,16 +14,16 @@ ARG INSTALLOHMYZSHCONFIG="${INSTALLOHMYZSHCONFIG:-"true"}"
 USER root
 
 # update to faster mirror
-ARG MIRROR=http://ftp.fau.de/ubuntu/
-RUN <<EOF
-echo "deb [arch=$(dpkg-architecture -q DEB_BUILD_ARCH)] ${MIRROR} $(. /etc/os-release >/dev/null; echo $VERSION_CODENAME) main universe multiverse restricted" > /etc/apt/sources.list
-echo "deb [arch=$(dpkg-architecture -q DEB_BUILD_ARCH)] ${MIRROR} $(. /etc/os-release >/dev/null; echo $VERSION_CODENAME)-updates main universe multiverse restricted" >> /etc/apt/sources.list
-echo "deb [arch=$(dpkg-architecture -q DEB_BUILD_ARCH)] ${MIRROR} $(. /etc/os-release >/dev/null; echo $VERSION_CODENAME)-security main universe multiverse restricted" >> /etc/apt/sources.list
-echo "deb [arch=$(dpkg-architecture -q DEB_BUILD_ARCH)] ${MIRROR} $(. /etc/os-release >/dev/null; echo $VERSION_CODENAME)-proposed main universe multiverse restricted" >> /etc/apt/sources.list
-echo "deb [arch=$(dpkg-architecture -q DEB_BUILD_ARCH)] ${MIRROR} $(. /etc/os-release >/dev/null; echo $VERSION_CODENAME)-backports main universe multiverse restricted" >> /etc/apt/sources.list
+RUN <<EOF > /etc/apt/sources.list.d/ubuntu.sources
+Types: deb
+URIs: http://ftp.fau.de/ubuntu/
+Suites: $(. /etc/os-release >/dev/null && echo ${VERSION_CODENAME}) $(. /etc/os-release >/dev/null && echo ${VERSION_CODENAME})-updates $(. /etc/os-release >/dev/null && echo ${VERSION_CODENAME})-backports $(. /etc/os-release >/dev/null && echo ${VERSION_CODENAME})-security $(. /etc/os-release >/dev/null && echo ${VERSION_CODENAME})-proposed
+Components: main universe restricted multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 EOF
 
-RUN apt update &&\
+RUN <<EOF
+    apt update
     apt install --no-install-recommends -y \
     build-essential \
     curl \
@@ -41,18 +41,21 @@ RUN apt update &&\
     libxtst6 \
     libxi6 \
     libfreetype6 \
-    procps &&\
+    procps
     apt clean
+EOF
 
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 
 ENV PATH="/home/linuxbrew/.linuxbrew/bin:${PATH}"
 
 WORKDIR /tmp
-RUN userdel -r ubuntu && \
-    git clone https://github.com/devcontainers/features.git && \
-    cd features/src/common-utils && \
-    bash main.sh
+RUN <<EOF
+userdel -r ubuntu
+git clone https://github.com/devcontainers/features.git
+cd features/src/common-utils
+bash main.sh
+EOF
 
 ARG MOBY=false
 ARG VERSION=latest
