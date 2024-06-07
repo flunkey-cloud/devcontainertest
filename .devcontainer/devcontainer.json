@@ -25,7 +25,9 @@
   ],
   "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/clone-repos.sh",
   "forwardPorts": [
+    // eplf ui
     3000,
+    // bgz ui
     3001
   ],
   "remoteEnv": {
