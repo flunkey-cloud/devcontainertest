@@ -1,0 +1,100 @@
+{
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
+  "name": "EPLF GO Container",
+  "dockerComposeFile": "docker-compose.yaml",
+  "service": "eplf-dev",
+  "runServices": ["kafka", "kafka-ui", "mysql", "keycloak"],
+  "updateRemoteUserUID": true,
+//  "remoteUser": "developer",
+  "containerUser": "developer",
+//  "workspaceMount": "source=${localWorkspaceFolder}/havdb-einnahmeplattform,target=/workspace,type=bind",
+  "workspaceFolder": "/workspaces",
+  "mounts": [
+    // Binding the host docker socket to the container (docker-outside-of-docker)
+    "source=/var/run/docker.sock,target=/var/run/docker-host.sock,type=bind",
+    // mount ssh keys -> git clone
+    "source=/home/${localEnv:USER}/.ssh,target=/home/developer/.ssh, readonly, type=bind",
+    "source=/home/${localEnv:USER}/.ssh,target=/root/.ssh,readonly, type=bind",
+    // persist user profile in a named volume
+    "source=profile,target=/home/developer/,type=volume",
+    // persist vscode stuff in anonymous volume -> will be deleted on recreation
+    "target=/home/developer/.vscode-server,type=volume",
+    // mount some cache stuff for go builds
+    "source=${localEnv:HOME}/.cache/go-build,target=/home/developer/.cache/go-build,type=bind,consistency=consistent",
+    "source=${localEnv:HOME}/go/pkg,target=/go/pkg/mod/,type=bind,consistency=consistent"
+  ],
+  "postStartCommand": "su developer -c 'bash ${containerWorkspaceFolder}/.devcontainer/clone-repos.sh'",
+  "forwardPorts": [
+    3000,
+    3001
+  ],
+  "remoteEnv": {
+    "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}",
+    "HOME": ""
+  },
+  "containerEnv": {
+    "PATH": "/usr/local/go/bin:/home/developer/go/bin:${PATH}",
+    "GOPATH": "/home/developer/go",
+    "CGO_ENABLED": "0",
+    "GO111MODULE": "on"
+  },
+  "capAdd": [
+    "SYS_PTRACE"
+  ],
+  "securityOpt": [
+    "apparmor=unconfined",
+    "seccomp=unconfined"
+  ],
+  "customizations": {
+    // Configure properties specific to VS Code.
+    "vscode": {
+      // Set *default* container specific settings.json values on container create.
+      "settings": {
+        "go.toolsManagement.checkForUpdates": "local",
+        "go.useLanguageServer": true,
+        "go.gopath": "/home/developer/go"
+      },
+      // Add the IDs of extensions you want installed when the container is created.
+      "extensions": [
+        // go stuff
+        "golang.Go",
+        "msyrus.go-doc",
+
+        // ui stuff
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "antfu.vite",
+
+        // common
+        "EditorConfig.EditorConfig",
+        "ms-vscode-remote.vscode-remote-extensionpack",
+        "ms-vscode.remote-explorer",
+        "ms-vscode.remote-server",
+        "skellock.just",
+        "oderwat.indent-rainbow",
+        "MS-SarifVSCode.sarif-viewer",
+        "foxundermoon.shell-format",
+        "redhat.vscode-yaml",
+        "kokakiwi.vscode-just",
+        "robocorp.robotframework-lsp",
+        "jebbs.plantuml",
+        "terrastruct.d2",
+        "pomdtr.markdown-kroki",
+
+        // docker
+        "ms-azuretools.vscode-docker",
+        "p1c2u.docker-compose",
+        "formulahendry.docker-explorer",
+        "henriiik.docker-linter",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+
+        // git
+        "codezombiech.gitignore",
+        "donjayamanne.githistory",
+        "alefragnani.project-manager",
+        "eamodio.gitlens",
+        "srmeyers.git-prefix"
+      ]
+    }
+  }
+}

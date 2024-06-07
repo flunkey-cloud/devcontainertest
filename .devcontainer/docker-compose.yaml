@@ -1,0 +1,132 @@
+# $schema: https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json
+---
+
+services:
+  eplf-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - AZ_READ_TOKEN
+        - USERNAME=developer
+        - REMOTE_USER=developer
+        - USERUID=1000
+        - USERGID=1000
+        - CONFIGUREZSHASDEFAULTSHELL=true
+        - NONFREEPACKAGES=true
+
+    # Overrides the default command so things don't shut down after the process ends.
+    entrypoint: /usr/local/share/docker-init.sh
+    command: sleep infinity
+
+
+  # Du kannst Docker Host-Port ändern, falls "9093" Port nicht frei ist. In diesem Fall musst du "PLAINTEXT_HOST" Port für "KAFKA_ADVERTISED_LISTENERS"
+  # auch ändern.
+  # z.B
+  #    ports:
+  #      - "<PORT>:9093"
+  #    environment:
+  #      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:<PORT>
+  kafka:
+    image: crhavdblabor9r5j5oly.azurecr.io/cp-kafka-testing:latest
+    container_name: kafka
+    ports:
+      - "9093:9093"
+    env_file:
+      - .env
+    environment:
+      - KAFKA_BROKER_ID=1
+      - CONTAINER_NAME=kafka
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9093
+      - KAFKA_LISTENERS=PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9093
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+      - KAFKA_PROCESS_ROLES=broker,controller
+      - KAFKA_NODE_ID=1
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:29093
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_LOG_DIRS=/tmp/kraft-combined-logs
+      - TOPICS
+    ulimits:
+      nofile:
+        soft: 512
+        hard: 512
+    healthcheck:
+      test: /usr/bin/kafka-topics --describe --topic $${TOPICS##*" "} --bootstrap-server localhost:9093;
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    restart: always
+
+  kafka-ui:
+    image: vectorized/console:master-8fcce39
+    container_name: kafka-ui
+    depends_on:
+      kafka:
+        condition: service_healthy
+    ports:
+      - "8888:8080"
+    restart: always
+    environment:
+      - KAFKA_BROKERS=kafka:29092
+
+  mysql:
+    image: docker.io/mysql:8
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: mysqladmin ping -h localhost -P3306 -uroot -p$${MYSQL_ROOT_PASSWORD} | grep -q 'mysqld is alive'
+      interval: 10s
+      timeout: 5s
+      retries: 4
+      start_period: 15s
+    volumes:
+      - ./mysql/init:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    command:
+      - "--slow_query_log=ON"
+      - "--slow_query_log_file=/tmp/slow.log"
+      # - '--long-query-time=0.01'
+      - "--log-queries-not-using-indexes=ON"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:18.0.0
+    container_name: keycloak
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "8180:8080"
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        # additional Script to create Keycloak User
+        nohup ./add-user.sh &
+        # Run Keycloak Server
+        ./opt/keycloak/bin/kc.sh start-dev --import-realm
+    volumes:
+      - ./keycloak/realm-einnahmeplattform.json:/opt/keycloak/data/import/realm.json:ro
+      - ./keycloak/add-user.sh:/add-user.sh
+    environment:
+      KC_DB: mysql
+      KC_DB_URL: jdbc:mysql://mysql/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      # folgende Umgebungsvariablen dienen zur Anlage der benötigten Realm-Daten (Client, User, Rolle) in Keycloak
+      KC_SERVER: http://localhost:8080
+      KC_SECONDARY_REALM: einnahmeplattform
+      KC_SECONDARY_REALM_CLIENT: havdb-eplf-client
+      KC_SECONDARY_REALM_CLIENT_ROLE: eplf_anzeigen
+      KC_SECONDARY_REALM_CLIENT_USER: testuser
+      KC_SECONDARY_REALM_CLIENT_USER_PASSWORD: testpassword
+    restart: unless-stopped
