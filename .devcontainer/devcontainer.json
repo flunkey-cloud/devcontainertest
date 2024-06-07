@@ -23,7 +23,7 @@
     "source=${localEnv:HOME}/.cache/go-build,target=/home/developer/.cache/go-build,type=bind,consistency=consistent",
     "source=${localEnv:HOME}/go/pkg,target=/go/pkg/mod/,type=bind,consistency=consistent"
   ],
-  "postStartCommand": "su developer -c 'bash ${containerWorkspaceFolder}/.devcontainer/clone-repos.sh'",
+  "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/clone-repos.sh",
   "forwardPorts": [
     3000,
     3001
