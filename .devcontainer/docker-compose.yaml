@@ -7,10 +7,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      cache_from:
-        - crhavdblabor9r5j5oly.azurecr.io/go-dev-container:latest
-      cache_to:
-        - crhavdblabor9r5j5oly.azurecr.io/go-dev-container:latest
       pull: true
 
     environment:
