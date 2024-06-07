@@ -13,7 +13,7 @@ ARG INSTALLOHMYZSHCONFIG="${INSTALLOHMYZSHCONFIG:-"true"}"
 
 USER root
 
-// update to faster mirror
+# update to faster mirror
 ARG MIRROR=http://ftp.fau.de/ubuntu/
 RUN <<EOF
 echo "deb [arch=$(dpkg-architecture -q DEB_BUILD_ARCH)] ${MIRROR} $(. /etc/os-release >/dev/null; echo $VERSION_CODENAME) main universe multiverse restricted" > /etc/apt/sources.list
