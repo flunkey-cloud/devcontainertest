@@ -2,7 +2,9 @@
 set -x
 
 # shellcheck disable=SC2016
-echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/"${USERNAME}"/.zshrc
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/"${USERNAME}"/.zprofile
+# shellcheck disable=SC2016
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/"${USERNAME}"/.provile
 
 cd "$(dirname "${LOCAL_WORKSPACE_FOLDER}")" || exit
 
