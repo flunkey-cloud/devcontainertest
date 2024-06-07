@@ -18,7 +18,7 @@
     // persist user profile in a named volume
     "source=profile,target=/home/developer/,type=volume",
     // persist vscode stuff in anonymous volume -> will be deleted on recreation
-    "target=/home/developer/.vscode-server,type=volume",
+    "target=/root/.vscode-server,type=volume",
     // mount some cache stuff for go builds
     "source=${localEnv:HOME}/.cache/go-build,target=/home/developer/.cache/go-build,type=bind,consistency=consistent",
     "source=${localEnv:HOME}/go/pkg,target=/go/pkg/mod/,type=bind,consistency=consistent"
