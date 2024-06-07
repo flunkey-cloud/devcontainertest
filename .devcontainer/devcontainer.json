@@ -5,7 +5,7 @@
   "service": "eplf-dev",
   "runServices": ["kafka", "kafka-ui", "mysql", "keycloak"],
   "updateRemoteUserUID": true,
-//  "remoteUser": "developer",
+  "remoteUser": "developer",
   "containerUser": "developer",
 //  "workspaceMount": "source=${localWorkspaceFolder}/havdb-einnahmeplattform,target=/workspace,type=bind",
   "workspaceFolder": "/workspaces",
@@ -36,9 +36,6 @@
   },
   "containerEnv": {
     "PATH": "/usr/local/go/bin:/home/developer/go/bin:${PATH}",
-    "GOPATH": "/home/developer/go",
-    "CGO_ENABLED": "0",
-    "GO111MODULE": "on"
   },
   "capAdd": [
     "SYS_PTRACE"
