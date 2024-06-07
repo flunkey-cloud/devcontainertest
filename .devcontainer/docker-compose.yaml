@@ -129,4 +129,3 @@ services:
       KC_SECONDARY_REALM_CLIENT_ROLE: eplf_anzeigen
       KC_SECONDARY_REALM_CLIENT_USER: testuser
       KC_SECONDARY_REALM_CLIENT_USER_PASSWORD: testpassword
-    restart: unless-stopped
