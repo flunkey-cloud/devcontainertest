@@ -49,10 +49,10 @@ ARG INSTALLDOCKERBUILDX=true
 RUN cd features/src/docker-outside-of-docker && \
     bash install.sh
 
-#RUN git clone https://github.com/meaningful-ooo/devcontainer-features.git && \
-#    cd devcontainer-features/src/homebrew && \
-#    bash install.sh
-#
+RUN git clone https://github.com/meaningful-ooo/devcontainer-features.git && \
+   cd devcontainer-features/src/homebrew && \
+   bash install.sh
+
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
 RUN brew install gcc just go-task go azure-cli argocd helm kubernetes-cli kube-linter kubectx bpytop openshift-cli
