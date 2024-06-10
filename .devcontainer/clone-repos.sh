@@ -2,9 +2,8 @@
 set -x
 
 # shellcheck disable=SC2016
-echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/"${USERNAME}"/.zprofile
-# shellcheck disable=SC2016
-echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/"${USERNAME}"/.provile
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' | tee -a /home/"${USERNAME}"/.zprofile /home/"${USERNAME}"/.provile
+echo "machine dev.azure.com login pat password ${AZ_READ_TOKEN}" > ~/.netrc
 
 cd "$(dirname "${LOCAL_WORKSPACE_FOLDER}")" || exit
 
