@@ -5,6 +5,13 @@ set -x
 echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' | tee -a /home/"${USERNAME}"/.zprofile /home/"${USERNAME}"/.provile
 echo "machine dev.azure.com login pat password ${AZ_READ_TOKEN}" > ~/.netrc
 
+gpg --import /home/developer/gpg-key.asc
+git config --global commit.gpgsign true
+
+keyid=$(gpg --import-options show-only --import gpg-key.asc | head -n-3 | tail -n-1 | tr -d '[:blank:]')
+git config --global user.signingkey "${keyid}"
+
+
 cd "$(dirname "${LOCAL_WORKSPACE_FOLDER}")" || exit
 
 sudo chown "${USERNAME}":"${USERNAME}" -R /home/"${USERNAME}"
