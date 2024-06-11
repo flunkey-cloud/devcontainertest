@@ -73,7 +73,7 @@ RUN git clone https://github.com/meaningful-ooo/devcontainer-features.git && \
 
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
-RUN brew install gcc just go-task go azure-cli argocd helm kubernetes-cli kube-linter kubectx bpytop openshift-cli
+RUN brew install gcc just go-task go azure-cli argocd helm kubernetes-cli kube-linter kubectx bpytop openshift-cli node
 
 ENV CGO_ENABLED=0 \
    GO111MODULE=on \
