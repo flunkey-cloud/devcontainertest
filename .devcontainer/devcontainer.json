@@ -14,6 +14,7 @@
     "source=/var/run/docker.sock,target=/var/run/docker-host.sock,type=bind",
     // mount ssh keys -> git clone
     "source=/home/${localEnv:USER}/.ssh,target=/home/developer/.ssh, readonly, type=bind",
+    "source=/home/${localEnv:USER}/.gpg,target=/home/developer/.gpg, readonly, type=bind",
     "source=/home/${localEnv:USER}/.ssh,target=/root/.ssh,readonly, type=bind",
     // persist user profile in a named volume
     "source=profile,target=/home/developer/,type=volume",
