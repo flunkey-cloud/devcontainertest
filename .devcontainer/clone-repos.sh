@@ -1,6 +1,7 @@
 #!/usr/bin/bash
+whoami
+id
 set -x
-
 # shellcheck disable=SC2016
 echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' | tee -a /home/"${USERNAME}"/.zprofile /home/"${USERNAME}"/.provile
 echo "machine dev.azure.com login pat password ${AZ_READ_TOKEN}" > ~/.netrc
