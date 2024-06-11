@@ -8,6 +8,9 @@ services:
       context: .
       dockerfile: Dockerfile
       pull: true
+      cache_from:
+        - mcr.microsoft.com/devcontainers/base:ubuntu-24.04
+        - crhavdblabor9r5j5oly.azurecr.io/go-dev-container:latest
 
     environment:
       - AZ_READ_TOKEN
