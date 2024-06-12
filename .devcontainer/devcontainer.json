@@ -79,6 +79,8 @@
         "jebbs.plantuml",
         "terrastruct.d2",
         "pomdtr.markdown-kroki",
+        "cweijan.dbclient-jdbc",
+        "cweijan.vscode-mysql-client2",
 
         // docker
         "ms-azuretools.vscode-docker",
