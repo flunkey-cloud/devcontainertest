@@ -12,7 +12,6 @@ git config --global commit.gpgsign true
 keyid=$(gpg --import-options show-only --import /home/developer/gpg-key.asc | head -n-3 | tail -n-1 | tr -d '[:blank:]')
 git config --global user.signingkey "${keyid}"
 
-
 cd "$(dirname "${LOCAL_WORKSPACE_FOLDER}")" || exit
 
 sudo chown "${USERNAME}":"${USERNAME}" -R /home/"${USERNAME}"
