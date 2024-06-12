@@ -1,16 +1,15 @@
 #!/usr/bin/bash
-whoami
-id
-set -x
+echo "Running as $(whoami)"
 # shellcheck disable=SC2016
 echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' | tee -a /home/"${USERNAME}"/.zprofile /home/"${USERNAME}"/.provile
 echo "machine dev.azure.com login pat password ${AZ_READ_TOKEN}" > ~/.netrc
 
-gpg --import /home/developer/gpg-key.asc
-git config --global commit.gpgsign true
-
-keyid=$(gpg --import-options show-only --import /home/developer/gpg-key.asc | head -n-3 | tail -n-1 | tr -d '[:blank:]')
-git config --global user.signingkey "${keyid}"
+if [ -f /home/developer/gpg-key.asc ]; then
+  gpg --import /home/developer/gpg-key.asc
+  git config --global commit.gpgsign true
+  keyid=$(gpg --import-options show-only --import /home/developer/gpg-key.asc | head -n-3 | tail -n-1 | tr -d '[:blank:]')
+  git config --global user.signingkey "${keyid}"
+fi
 
 cd "$(dirname "${LOCAL_WORKSPACE_FOLDER}")" || exit
 
