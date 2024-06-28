@@ -69,7 +69,6 @@
         "ms-vscode-remote.vscode-remote-extensionpack",
         "ms-vscode.remote-explorer",
         "ms-vscode.remote-server",
-        "skellock.just",
         "oderwat.indent-rainbow",
         "MS-SarifVSCode.sarif-viewer",
         "foxundermoon.shell-format",
@@ -81,6 +80,8 @@
         "pomdtr.markdown-kroki",
         "cweijan.dbclient-jdbc",
         "cweijan.vscode-mysql-client2",
+        "mkloubert.vscode-http-client",
+        "Postman.postman-for-vscode",
 
         // docker
         "ms-azuretools.vscode-docker",
